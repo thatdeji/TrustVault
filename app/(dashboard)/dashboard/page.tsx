@@ -16,10 +16,14 @@ const Card: React.FC<{
   >
     <div className="flex items-center gap-4">
       <div className="w-6 h-6 flex items-center justify-center">{icon}</div>
-      <h3 className="text-2xl font-normal text-[#1F1F1F]">{title}</h3>
+      <h3 className="text-xl md:text-2xl font-normal text-[#1F1F1F]">
+        {title}
+      </h3>
     </div>
     {/* <div className="flex items-center gap-4 justify-between flex-grow"> */}
-    <p className="ml-7 text-5xl font-normal text-[#1F1F1F]">{number}</p>
+    <p className="ml-7 text-3xl md:text-5xl font-normal text-[#1F1F1F]">
+      {number}
+    </p>
     {/* </div> */}
     <div className="w-[23px] h-[25px]">
       <ArrowRight />
@@ -29,7 +33,7 @@ const Card: React.FC<{
 
 export default function Home() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div className="lg:col-span-1 bg-white p-6 card">
         <h2 className="text-3xl text-[#1F1F1F] font-medium mb-4">
           Escrow service <br /> made easy
