@@ -10,7 +10,7 @@ export function ArrowRight(props: SVGProps<SVGSVGElement>) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_39_674)">
+      <g clipPath="url(#clip0_39_674)">
         <path
           d="M8.00192 22.921L17.4156 12.3465L7.6665 2.13466"
           stroke="#5F4E3C"

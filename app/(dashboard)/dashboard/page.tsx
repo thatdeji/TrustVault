@@ -14,13 +14,13 @@ const Card: React.FC<{
     href={href}
     className="bg-white min-h-[158px] px-9 card flex-row flex items-center justify-between"
   >
-    <div className="flex items-center gap-4 justify-between flex-grow">
-      <div className="flex items-center gap-4">
-        <div className="w-6 h-6 flex items-center justify-center">{icon}</div>
-        <h3 className="text-2xl font-normal text-[#1F1F1F]">{title}</h3>
-      </div>
-      <p className="ml-7 text-5xl font-normal text-[#1F1F1F]">{number}</p>
+    <div className="flex items-center gap-4">
+      <div className="w-6 h-6 flex items-center justify-center">{icon}</div>
+      <h3 className="text-2xl font-normal text-[#1F1F1F]">{title}</h3>
     </div>
+    {/* <div className="flex items-center gap-4 justify-between flex-grow"> */}
+    <p className="ml-7 text-5xl font-normal text-[#1F1F1F]">{number}</p>
+    {/* </div> */}
     <div className="w-[23px] h-[25px]">
       <ArrowRight />
     </div>
