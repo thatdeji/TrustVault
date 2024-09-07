@@ -4,3 +4,6 @@
 [submodule "trustvault/lib/sign-protocol-evm"]
 	path = trustvault/lib/sign-protocol-evm
 	url = https://github.com/ethsign/sign-protocol-evm
+[submodule "trustvault/lib/openzeppelin-contracts"]
+	path = trustvault/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
