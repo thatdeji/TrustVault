@@ -10,7 +10,7 @@ const Sidebar: React.FC = () => {
   return (
     <div>
       <aside className="max-w-[286px] fixed top-0 left-0 overflow-y-auto h-screen w-full bg-[#F6F6F7] border border-[rgba(23,_24,_24,_0.05)] flex flex-col">
-        <div className="flex items-center justify-center w-[125px] h-[26px] mb-20 mt-12 mx-auto">
+        <div className="flex items-center justify-center w-[181px] h-[28px] mb-20 mt-12 mx-auto">
           <Logo />
         </div>
         <ul className="list-none flex flex-col w-full gap-2 mb-16">

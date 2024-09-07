@@ -12,7 +12,7 @@ const Card: React.FC<{
 }> = ({ href, title, icon, number }) => (
   <Link
     href={href}
-    className="bg-white min-h-[158px] px-9 card flex-row flex items-center justify-between"
+    className="bg-white min-h-[158px] px-9 card flex-row flex items-center justify-between group"
   >
     <div className="flex items-center gap-4">
       <div className="w-6 h-6 flex items-center justify-center">{icon}</div>
@@ -25,7 +25,7 @@ const Card: React.FC<{
       {number}
     </p>
     {/* </div> */}
-    <div className="w-[23px] h-[25px]">
+    <div className="w-[23px] h-[25px] group-hover:translate-x-2 transition-transform duration-300">
       <ArrowRight />
     </div>
   </Link>
@@ -45,7 +45,7 @@ export default function Home() {
         <button className="button w-fit">Create a deal</button>
       </div>
 
-      <div className="grid lg:col-span-1 grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-4">
         <Card
           href="/deals"
           icon={<Ongoing />}
@@ -67,7 +67,7 @@ export default function Home() {
           }
         />
       </div>
-      <div className="lg:col-span-3 px-12  p-6 card">
+      <div className="lg:col-span-3 px-12 py-6 card">
         <h2 className="text-3xl text-[#1F1F1F] font-medium ">
           Recent Activity
         </h2>

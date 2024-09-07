@@ -84,7 +84,7 @@ const ConnectWallet: React.FC = () => {
                     {chain.name}
                   </button> */}
                   <button
-                    className="button"
+                    className="button bg-white flex items-center gap-4"
                     onClick={openAccountModal}
                     type="button"
                   >
@@ -92,6 +92,19 @@ const ConnectWallet: React.FC = () => {
                     {account.displayBalance
                       ? ` (${account.displayBalance})`
                       : ""}
+                    <svg
+                      width="20"
+                      height="16"
+                      viewBox="0 0 27 23"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M2.25 8.00204L13.6946 17.4158L24.7466 7.66663"
+                        stroke="#5F4E3C"
+                        strokeWidth="3"
+                      />
+                    </svg>
                   </button>
                 </div>
               );
