@@ -1,0 +1,2 @@
+@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
+@ethsign/sign-protocol-evm/=lib/sign-protocol-evm/
