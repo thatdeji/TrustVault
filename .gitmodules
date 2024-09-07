@@ -1,3 +1,6 @@
 [submodule "trustvault/lib/forge-std"]
 	path = trustvault/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "trustvault/lib/sign-protocol-evm"]
+	path = trustvault/lib/sign-protocol-evm
+	url = https://github.com/ethsign/sign-protocol-evm
