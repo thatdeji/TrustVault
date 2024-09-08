@@ -24,14 +24,14 @@ const initialFormState = {
 export default function Deals() {
   const [isOpenDisputeModal, setIsOpenDisputeModal] = useState(false);
   const [url, setUrl] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [formState, setFormState] = useState(initialFormState);
   const [selectedTab, setSelectedTab] = useState(0);
 
   const searchParams = useSearchParams();
 
-  const { address, getUserAddress, proposeDispute, getDisputeCount } =
-    useWeb3();
+  const { getUserAddress, proposeDispute } = useWeb3();
 
   function open() {
     setIsOpenDisputeModal(true);
@@ -43,21 +43,19 @@ export default function Deals() {
   }
 
   useEffect(() => {
-    async () => {
-      const disputeCount = await getDisputeCount();
-      console.log(disputeCount);
-    };
+    getUserAddress();
+  }, []);
+
+  useEffect(() => {
     const disputeId = searchParams.get("disputeId");
     if (disputeId) {
       setSelectedTab(2);
     }
-  }, []);
+  }, [searchParams]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // setFormState(initialFormState);
-    // setIsSuccess(true);
-    proposeDispute({
+    await proposeDispute({
       name: formState.dealName,
       message: formState.message,
       images: [url],
@@ -66,6 +64,10 @@ export default function Deals() {
       amount: parseFloat(formState.disputeFee),
       deadline: parseInt(formState.deadline) * 3600,
     });
+
+    setFormState(initialFormState);
+    setIsSuccess(true);
+    setIsLoading(false);
   };
 
   return (
@@ -177,7 +179,9 @@ export default function Deals() {
                 }}
                 url={url}
               />
-              <button className="button">Create dispute</button>
+              <button disabled={isLoading} className="button">
+                Create dispute
+              </button>
             </form>
           </>
         ) : (

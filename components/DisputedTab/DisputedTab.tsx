@@ -2,6 +2,12 @@
 import ImageUpload from "@/components/ImageUpload/ImageUpload";
 import Modal from "@/components/Modal/Modal";
 import SuccessMessage from "@/components/SuccessMessage/SuccessMessage";
+import { useWeb3 } from "@/context/useWeb3";
+import {
+  bigintToIndexes,
+  convertBigIntToHours,
+} from "@/utils/helper-functions";
+import { IDispute } from "@/utils/helper-types";
 import { useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 // import toast from "react-hot-toast";
@@ -17,58 +23,109 @@ const initialFormState = {
 export default function DisputedTab() {
   const [isOpenDisputeModal, setIsOpenDisputeModal] = useState(false);
   const [url, setUrl] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [formState, setFormState] = useState(initialFormState);
+  const [disputes, setDisputes] = useState<
+    (IDispute & {
+      amount: number;
+    })[]
+  >([]);
+  const [disputeId, setDisputeId] = useState<number | null>(null);
+
+  const { address, initiateDispute, getDisputeCount, getDisputes } = useWeb3();
 
   const searchParams = useSearchParams();
-  const disputes = [
-    {
-      name: "Organic Beauty Product Box",
-      initiationTime: "1hr 35mins ago",
-      status: "Awaiting Sign",
-      statusColor: "bg-[#E6E6E6] text-[#202223]",
-      createdBy: "(0x3FfB...4a25e)",
-      disputeFee: "$10",
-    },
-    {
-      name: "Website Redesign/retouch",
-      initiationTime: "10mins ago",
-      status: "Party Signed",
-      statusColor:
-        "bg-[rgba(204,_255,_236,_0.67)] text-[rgba(0,_150,_94,_0.67)]",
-      createdBy: "(0x23fG...9c7f)",
-      disputeFee: "$50",
-    },
-  ];
+  // const disputes = [
+  //   {
+  //     name: "Organic Beauty Product Box",
+  //     initiationTime: "1hr 35mins ago",
+  //     status: "Awaiting Sign",
+  //     statusColor: "bg-[#E6E6E6] text-[#202223]",
+  //     createdBy: "(0x3FfB...4a25e)",
+  //     disputeFee: "$10",
+  //   },
+  //   {
+  //     name: "Website Redesign/retouch",
+  //     initiationTime: "10mins ago",
+  //     status: "Party Signed",
+  //     statusColor:
+  //       "bg-[rgba(204,_255,_236,_0.67)] text-[rgba(0,_150,_94,_0.67)]",
+  //     createdBy: "(0x23fG...9c7f)",
+  //     disputeFee: "$50",
+  //   },
+  // ];
+
+  useEffect(() => {
+    const fetchDisputes = async () => {
+      const count = await getDisputeCount();
+      console.log(bigintToIndexes(count));
+      const indexes = bigintToIndexes(count);
+      const disputes = await Promise.all(
+        indexes.map((index) => getDisputes(index))
+      );
+      const mappedAndFilteredDisputes = disputes
+        .map((dispute) => ({
+          name: dispute[0],
+          dealerAddress: dispute[1],
+          dealerMessage: dispute[2],
+          counterpartyAddress: dispute[3],
+          counterpartyMessage: dispute[4],
+          status: dispute[7],
+          deadline: convertBigIntToHours(dispute[9]),
+          amount: Number(dispute[6]),
+        }))
+        .filter(
+          (dispute) =>
+            dispute.dealerAddress === address ||
+            dispute.counterpartyAddress === address
+        );
+      setDisputes(mappedAndFilteredDisputes);
+    };
+    if (address) {
+      fetchDisputes();
+    }
+  }, [address]);
 
   useEffect(() => {
     const disputeId = searchParams.get("disputeId");
-    if (disputeId) {
+    if (disputeId && disputes.length) {
       setIsOpenDisputeModal(true);
-      setFormState({
-        dealName: "Organic Beauty Product Box",
-        disputeFee: "$10",
-        address: "County Party Address",
-        deadline: "6",
-        message: "Message",
-      });
+      const dispute = disputes.find(
+        (dispute, index) => index === parseInt(disputeId)
+      );
+      if (dispute) {
+        setFormState({
+          dealName: dispute.name,
+          disputeFee: `${dispute.amount}`,
+          address: dispute.counterpartyAddress,
+          deadline: `${dispute.deadline}`,
+          message: "",
+        });
+        open();
+        setDisputeId(Number(disputeId));
+      }
     }
-  }, []);
+  }, [disputes]);
 
   function open() {
     setIsOpenDisputeModal(true);
   }
-  console.log(formState);
 
   function close() {
     setIsOpenDisputeModal(false);
     setIsSuccess(false);
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setIsSuccess(true);
-    setFormState(initialFormState);
+    if (disputeId) {
+      setIsLoading(true);
+      await initiateDispute(disputeId, formState.message, url);
+      setIsSuccess(true);
+      setIsLoading(false);
+      setFormState(initialFormState);
+    }
   };
 
   return (
@@ -184,7 +241,9 @@ export default function DisputedTab() {
                 }}
                 url={url}
               />
-              <button className="button">Sign Dispute</button>
+              <button disabled={isLoading} className="button">
+                Sign Dispute
+              </button>
             </form>
           </>
         ) : (
@@ -201,7 +260,7 @@ export default function DisputedTab() {
             Deal Name
           </h3>
           <h3 className="text-base md:text-lg font-light text-[rgba(31,_31,_31,_0.87)]">
-            Initiation Time
+            Deadline
           </h3>
           <h3 className="text-base md:text-lg font-light text-[rgba(31,_31,_31,_0.87)]">
             Status
@@ -223,37 +282,41 @@ export default function DisputedTab() {
             key={index}
             className="grid grid-cols-5 items-center pt-6 w-full cursor-pointer"
             onClick={() => {
-              setFormState({
-                dealName: dispute.name,
-                disputeFee: dispute.disputeFee,
-                address: "0x4552cBC00e49f8b4fDE477145557E2818Fe40F6b",
-                deadline: "6",
-                message: "",
-              });
-              open();
+              dispute.status &&
+                setFormState({
+                  dealName: dispute.name,
+                  disputeFee: dispute.amount.toString(),
+                  address: dispute.counterpartyAddress,
+                  deadline: dispute.deadline.toString(),
+                  message: "",
+                });
+              setDisputeId(index);
+              dispute.status && open();
             }}
           >
             <p className="text-base md:text-lg font-light underline">
               {dispute.name}
             </p>
             <p className="text-base md:text-lg font-light">
-              {dispute.initiationTime}
+              {dispute.deadline} hrs
             </p>
 
             <p>
               <span
-                className={`px-2 py-1 rounded-[20px] font-medium text-sm ${dispute.statusColor}`}
+                className={`px-2 py-1 rounded-[20px] font-medium text-sm ${
+                  !dispute.status
+                    ? "bg-[#E6E6E6] text-[#202223]"
+                    : "bg-[rgba(204,_255,_236,_0.67)] text-[rgba(0,_150,_94,_0.67)]"
+                }`}
               >
-                {dispute.status}
+                {dispute.status ? "Party Signed" : "Awaiting Sign"}
               </span>
             </p>
 
             <p className="text-base md:text-lg font-light">
-              {dispute.createdBy}
+              {dispute.dealerAddress}
             </p>
-            <p className="text-base md:text-lg font-light">
-              {dispute.disputeFee}
-            </p>
+            <p className="text-base md:text-lg font-light">{dispute.amount}</p>
 
             {/* Divider between rows */}
             {index !== disputes.length - 1 && (

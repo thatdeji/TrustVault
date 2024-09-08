@@ -1,12 +1,48 @@
 "use client";
 import Report from "@/components/Report/Report";
+import { useWeb3 } from "@/context/useWeb3";
 import { ArrowRight } from "@/svg/arrow-right";
 import { Check } from "@/svg/check";
+import { convertBigIntToHours } from "@/utils/helper-functions";
+import { IDispute } from "@/utils/helper-types";
 import Link from "next/link";
-import { useState } from "react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function SingleDispute() {
   const [vote, setVote] = useState<"buyer" | "seller" | null>(null);
+  const [deal, setDeal] = useState<IDispute | null>(null);
+  const [buyerVoteCount, setBuyerVoteCount] = useState(0);
+  const [sellerVoteCount, setSellerVoteCount] = useState(0);
+
+  const { getDisputeVotes, getDisputeAttesterVotes, getDisputes } = useWeb3();
+
+  const params = useParams();
+
+  useEffect(() => {
+    const paramsId = params.id;
+    if (paramsId && typeof paramsId === "string") {
+      const fetchDispute = async () => {
+        const dispute = await getDisputes(parseInt(paramsId));
+        const buyerVotes = await getDisputeVotes(parseInt(paramsId), true);
+        const sellerVotes = await getDisputeVotes(parseInt(paramsId), false);
+        setBuyerVoteCount(Number(buyerVotes));
+        setSellerVoteCount(Number(sellerVotes));
+        console.log(dispute);
+        setDeal({
+          name: dispute[0],
+          dealerAddress: dispute[1],
+          dealerMessage: dispute[2],
+          counterpartyAddress: dispute[3],
+          counterpartyMessage: dispute[4],
+          status: dispute[7],
+          deadline: convertBigIntToHours(dispute[9]),
+        });
+      };
+      fetchDispute();
+    }
+  }, [params]);
+
   return (
     <div className="w-full mt-7 md:mt-12">
       <div className="flex items-center gap-3 mb-5 md:mb-10">
@@ -20,34 +56,38 @@ export default function SingleDispute() {
           <ArrowRight />
         </div>
         <p className="rgba(31,_31,_31,_0.47) text-sm md:text-base font-medium">
-          [Organic Beauty Product Box]
+          [{deal?.name}]
         </p>
       </div>
       <div className="flex gap-4 flex-wrap justify-between items-center mb-3 md:mb-4">
         <div className="flex items-center gap-8">
-          <p className="text-xl text-[#1F1F1F] font-medium">
-            [Organic Beauty Product Box]
-          </p>
-          <p className="h-6 py-1 px-5 flex items-center justify-center bg-[#00965E] rounded-[16px] md:rounded-[20px] text-sm md:text-base text-white">
-            Active
+          <p className="text-xl text-[#1F1F1F] font-medium">[{deal?.name}]</p>
+          <p
+            className={`h-6 py-1 px-5 flex items-center justify-center  rounded-[16px] md:rounded-[20px] text-sm md:text-base ${
+              deal?.status
+                ? "bg-[#00965E] text-white"
+                : "bg-[#DFC386] text-[#5F4E3C]"
+            }`}
+          >
+            {deal?.status ? "Active" : "Closed"}
           </p>
         </div>
         <p className="text-lg text-[rgba(31,_31,_31,_0.67)] font-normal">
-          Ends in 10 hours
+          Ends in {deal?.deadline} hours
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 mb-5 md:mb-6 gap-6">
         <div>
           <Report
             images={[]}
-            message={`I thought I'd found the perfect anniversary gift for my partner—a sleek watch that looked amazing online. Weeks passed with no delivery and no response from the seller. Our anniversary came and went. When the package finally arrived days late, I tore it open eagerly. My heart sank. Inside was a cheap plastic knockoff, nothing like the elegant timepiece advertised. Everything about it was inferior—from the scratched face to the flimsy strap. Defeated, I slumped onto the couch. I'd have to start my gift search all over again, this time avoiding those deceptive product photos. Sometimes, the old-fashioned way of shopping is worth the effort.`}
+            message={deal?.dealerMessage || ""}
             party="buyer"
           />
         </div>
         <div>
           <Report
             images={[]}
-            message={`I thought I'd found the perfect anniversary gift for my partner—a sleek watch that looked amazing online. Weeks passed with no delivery and no response from the seller. Our anniversary came and went. When the package finally arrived days late, I tore it open eagerly. My heart sank. Inside was a cheap plastic knockoff, nothing like the elegant timepiece advertised. Everything about it was inferior—from the scratched face to the flimsy strap. Defeated, I slumped onto the couch. I'd have to start my gift search all over again, this time avoiding those deceptive product photos. Sometimes, the old-fashioned way of shopping is worth the effort.`}
+            message={deal?.counterpartyMessage || ""}
             party="seller"
           />
         </div>
