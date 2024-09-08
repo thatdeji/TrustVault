@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import Sidebar from "@/components/Sidebar/Sidebar";
 import ConnectWallet from "@/components/ConnectWallet/ConnectWallet";
 import { useState } from "react";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -27,6 +28,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Toaster />
         <div
           className={` ${
             !isSidebarOpen

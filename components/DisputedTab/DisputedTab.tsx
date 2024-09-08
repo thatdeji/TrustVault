@@ -2,12 +2,9 @@
 import ImageUpload from "@/components/ImageUpload/ImageUpload";
 import Modal from "@/components/Modal/Modal";
 import SuccessMessage from "@/components/SuccessMessage/SuccessMessage";
-import { Copy } from "@/svg/copy";
-import { Fragment, useEffect, useState } from "react";
+import { useParams, useSearchParams } from "next/navigation";
+import { FormEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
-import DisputedTab from "@/components/DisputedTab/DisputedTab";
-import { useSearchParams } from "next/navigation";
 
 const initialFormState = {
   dealName: "",
@@ -17,14 +14,46 @@ const initialFormState = {
   message: "",
 };
 
-export default function Deals() {
+export default function DisputedTab() {
   const [isOpenDisputeModal, setIsOpenDisputeModal] = useState(false);
   const [url, setUrl] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [formState, setFormState] = useState(initialFormState);
-  const [selectedTab, setSelectedTab] = useState(0);
 
   const searchParams = useSearchParams();
+  const disputes = [
+    {
+      name: "Organic Beauty Product Box",
+      initiationTime: "1hr 35mins ago",
+      status: "Awaiting Sign",
+      statusColor: "bg-[#E6E6E6] text-[#202223]",
+      createdBy: "(0x3FfB...4a25e)",
+      disputeFee: "$10",
+    },
+    {
+      name: "Website Redesign/retouch",
+      initiationTime: "10mins ago",
+      status: "Party Signed",
+      statusColor:
+        "bg-[rgba(204,_255,_236,_0.67)] text-[rgba(0,_150,_94,_0.67)]",
+      createdBy: "(0x23fG...9c7f)",
+      disputeFee: "$50",
+    },
+  ];
+
+  useEffect(() => {
+    const disputeId = searchParams.get("disputeId");
+    if (disputeId) {
+      setIsOpenDisputeModal(true);
+      setFormState({
+        dealName: "Organic Beauty Product Box",
+        disputeFee: "$10",
+        address: "County Party Address",
+        deadline: "6",
+        message: "Message",
+      });
+    }
+  }, []);
 
   function open() {
     setIsOpenDisputeModal(true);
@@ -36,26 +65,19 @@ export default function Deals() {
     setIsSuccess(false);
   }
 
-  useEffect(() => {
-    const disputeId = searchParams.get("disputeId");
-    if (disputeId) {
-      setSelectedTab(2);
-    }
-  }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setFormState(initialFormState);
     setIsSuccess(true);
+    setFormState(initialFormState);
   };
 
   return (
-    <div className="w-full">
+    <div className="my-8 p-4 md:p-6 bg-[#FFF] w-full ">
       <Modal isOpen={isOpenDisputeModal} close={close}>
         {!isSuccess ? (
           <>
             <h1 className="mt-8 mb-12 text-center text-3xl md:text-4xl font-medium text-[#1F1F1F]">
-              Create dispute
+              Dispute To Sign
             </h1>
             <form
               onSubmit={handleSubmit}
@@ -68,6 +90,7 @@ export default function Deals() {
                   </label>
                   <input
                     required
+                    disabled
                     className="input"
                     type="text"
                     id="dealName"
@@ -84,6 +107,7 @@ export default function Deals() {
                   </label>
                   <input
                     required
+                    disabled
                     className="input"
                     type="text"
                     id="disputeFee"
@@ -105,6 +129,7 @@ export default function Deals() {
                   </label>
                   <input
                     required
+                    disabled
                     className="input"
                     type="text"
                     id="address"
@@ -121,6 +146,7 @@ export default function Deals() {
                   </label>
                   <select
                     required
+                    disabled
                     onChange={(e) => {
                       setFormState({ ...formState, deadline: e.target.value });
                     }}
@@ -158,98 +184,84 @@ export default function Deals() {
                 }}
                 url={url}
               />
-              <button className="button">Create dispute</button>
+              <button className="button">Sign Dispute</button>
             </form>
           </>
         ) : (
           <SuccessMessage
-            message="Your dispute has been created! Please copy the link and share to the counter party to sign"
-            title="Successfully created!"
-            extraNode={
-              <div className="mt-3">
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(
-                      "https://trustvault/deals?disputeId=23"
-                    );
-                    toast.success("Link copied to clipboard");
-                  }}
-                  className="button bg-white flex items-center gap-2"
-                >
-                  https://trustvault/dispute/0001
-                  <div className="w-5 h-[19px]">
-                    <Copy />
-                  </div>
-                </button>
-              </div>
-            }
+            message="The dispute has been signed and now open for the community to decide"
+            title="Successfully Signed!"
           />
         )}
       </Modal>
-      <article className="w-full">
-        <div className="flex flex-col md:flex-row gap-3 justify-between items-center mb-10">
-          {" "}
-          <h1 className="text-2xl md:text-3xl font-medium">My Deal(s)</h1>
-          <button onClick={open} className="button">
-            Create a dispute
-          </button>
+      {/* Table Header */}
+      <div className="w-full">
+        <div className="grid grid-cols-5 text-left font-medium text-gray-600 mb-2 w-full">
+          <h3 className="text-base md:text-lg font-light text-[rgba(31,_31,_31,_0.87)]">
+            Deal Name
+          </h3>
+          <h3 className="text-base md:text-lg font-light text-[rgba(31,_31,_31,_0.87)]">
+            Initiation Time
+          </h3>
+          <h3 className="text-base md:text-lg font-light text-[rgba(31,_31,_31,_0.87)]">
+            Status
+          </h3>
+          <h3 className="text-base md:text-lg font-light text-[rgba(31,_31,_31,_0.87)]">
+            Created By
+          </h3>
+          <h3 className="text-base md:text-lg font-light text-[rgba(31,_31,_31,_0.87)]">
+            Dispute Fee
+          </h3>
         </div>
-        <TabGroup selectedIndex={selectedTab} onChange={setSelectedTab}>
-          <TabList className="w-full px-5 border-b border-[rgba(31,_31,_31,_0.47)] flex gap-9 overflow-x-auto">
-            <Tab as={Fragment}>
-              {({ hover, selected }) => (
-                <button
-                  className={`${
-                    !selected
-                      ? "text-[rgba(31,_31,_31,_0.47)] "
-                      : "text-[rgba(31,_31,_31,_0.87)] border-b-2 border-b-[#5F4E3C]"
-                  }
-                 text-base md:text-lg flex items-center gap-3 py-2 px-4 md:py-3 md:px-7 font-semibold focus-within:outline-none`}
-                >
-                  Ongoing deal(s)
-                </button>
-              )}
-            </Tab>
-            <Tab as={Fragment}>
-              {({ hover, selected }) => (
-                <button
-                  className={`${
-                    !selected
-                      ? "text-[rgba(31,_31,_31,_0.47)] "
-                      : "text-[rgba(31,_31,_31,_0.87)] border-b-2 border-b-[#5F4E3C]"
-                  }
-                 text-base md:text-lg flex items-center gap-3 py-2 px-4 md:py-3 md:px-7 font-semibold focus-within:outline-none`}
-                >
-                  {" "}
-                  Completed deal(s)
-                </button>
-              )}
-            </Tab>
-            <Tab as={Fragment}>
-              {({ hover, selected }) => (
-                <button
-                  className={`${
-                    !selected
-                      ? "text-[rgba(31,_31,_31,_0.47)] "
-                      : "text-[rgba(31,_31,_31,_0.87)] border-b-2 border-b-[#5F4E3C]"
-                  }
-                 text-base md:text-lg flex items-center gap-3 py-2 px-4 md:py-3 md:px-7 font-semibold focus-within:outline-none`}
-                >
-                  {" "}
-                  Disputed
-                </button>
-              )}
-            </Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel></TabPanel>
-            <TabPanel>Content 2</TabPanel>
-            <TabPanel>
-              <DisputedTab />
-            </TabPanel>
-          </TabPanels>
-        </TabGroup>
-      </article>
+
+        {/* Divider */}
+        <hr className="my-2 bg-[rgba(31,_31,_31,_0.47)] h-[0.5px] w-full" />
+
+        {/* Table Rows */}
+        {disputes.map((dispute, index) => (
+          <div
+            key={index}
+            className="grid grid-cols-5 items-center pt-6 w-full cursor-pointer"
+            onClick={() => {
+              setFormState({
+                dealName: dispute.name,
+                disputeFee: dispute.disputeFee,
+                address: "0x4552cBC00e49f8b4fDE477145557E2818Fe40F6b",
+                deadline: "6",
+                message: "",
+              });
+              open();
+            }}
+          >
+            <p className="text-base md:text-lg font-light underline">
+              {dispute.name}
+            </p>
+            <p className="text-base md:text-lg font-light">
+              {dispute.initiationTime}
+            </p>
+
+            <p>
+              <span
+                className={`px-2 py-1 rounded-[20px] font-medium text-sm ${dispute.statusColor}`}
+              >
+                {dispute.status}
+              </span>
+            </p>
+
+            <p className="text-base md:text-lg font-light">
+              {dispute.createdBy}
+            </p>
+            <p className="text-base md:text-lg font-light">
+              {dispute.disputeFee}
+            </p>
+
+            {/* Divider between rows */}
+            {index !== disputes.length - 1 && (
+              <hr className="col-span-5 my-6 bg-[rgba(31,_31,_31,_0.47)] h-[0.5px] w-[1436px] overflow-x-scroll" />
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

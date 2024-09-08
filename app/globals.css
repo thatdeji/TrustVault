@@ -14,10 +14,15 @@
   }
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
 }
 
 @layer utilities {
@@ -32,5 +37,14 @@ body {
   }
   .card {
     @apply py-8 px-10 bg-[#FFF] w-full flex flex-col justify-center;
+  }
+  .input {
+    @apply h-12 rounded-none w-full flex items-center appearance-none py-1 px-5 border border-[#D9D9D9] bg-[rgba(255,_255,_255,_0.67)];
+  }
+  .label {
+    @apply text-[#000] text-lg font-normal;
+  }
+  .textarea {
+    @apply h-[165px] rounded-none w-full flex items-center appearance-none py-4 px-5 border border-[#D9D9D9] bg-[rgba(255,_255,_255,_0.67)] resize-none;
   }
 }
