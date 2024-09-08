@@ -8,8 +8,8 @@ const Sidebar: React.FC = () => {
   const pathname = usePathname();
 
   return (
-    <div>
-      <aside className="max-w-[286px] fixed top-0 left-0 overflow-y-auto h-screen w-full bg-[#F6F6F7] border border-[rgba(23,_24,_24,_0.05)] flex flex-col">
+    <div className="">
+      <aside className="max-w-[286px] fixed lg:flex-shrink-0 lg:static top-0 left-0 overflow-y-auto h-screen w-full bg-[#F6F6F7] border border-[rgba(23,_24,_24,_0.05)] flex flex-col">
         <div className="flex items-center justify-center w-[181px] h-[28px] mb-20 mt-12 mx-auto">
           <Logo />
         </div>
@@ -19,7 +19,7 @@ const Sidebar: React.FC = () => {
               <Link
                 className={`flex items-center gap-3 w-full px-10 py-4 cursor-pointer ${
                   item.link.includes(pathname)
-                    ? "bg-[#F3F0EC] border-l borderl-[#5F4E3C]"
+                    ? "bg-[#F3F0EC] border-l-4 border-l-[#5F4E3C]"
                     : ""
                 }`}
                 href={item.link}

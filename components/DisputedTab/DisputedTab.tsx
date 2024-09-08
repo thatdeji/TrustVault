@@ -2,9 +2,9 @@
 import ImageUpload from "@/components/ImageUpload/ImageUpload";
 import Modal from "@/components/Modal/Modal";
 import SuccessMessage from "@/components/SuccessMessage/SuccessMessage";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
 
 const initialFormState = {
   dealName: "",

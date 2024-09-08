@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex`}
       >
         <Toaster />
         <div
@@ -34,7 +34,7 @@ export default function RootLayout({
             !isSidebarOpen
               ? "-translate-x-full lg:translate-x-0"
               : " lg:translate-x-0"
-          } transition-all duration-300`}
+          } transition-all duration-300 lg:max-w-[286px] lg:w-full flex-shrink-0`}
         >
           <div
             className={`block lg:hidden ${
@@ -46,7 +46,7 @@ export default function RootLayout({
             <Sidebar />
           </div>
         </div>
-        <main className="lg:ml-[286px] flex-grow bg-[#FAFAFA] min-h-screen">
+        <main className="flex-grow bg-[#F6F6F7] shadow-header h-screen overflow-y-auto">
           {" "}
           <header className="py-4 px-4 md:py-7 md:px-16 flex flex-col md:flex-row gap-4 items-center justify-between lg:justify-end shadow-header bg-[#F6F6F7]">
             <button

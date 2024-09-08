@@ -14,7 +14,7 @@ export const topNav = [
   {
     title: "Settler",
     icon: <Settler />,
-    link: "/products",
+    link: "/settlers",
   },
 ];
 

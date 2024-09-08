@@ -33,7 +33,7 @@ body {
 
 @layer components {
   .button {
-    @apply border-2 border-b-[4px] border-[#5F4E3C] bg-[#EDDDBA] text-[#5F4E3C] font-semibold text-xl py-3 px-7 hover:border-b-[3px] hover:border-[3px];
+    @apply border-2 border-b-[4px] border-[#5F4E3C] bg-[#EDDDBA] text-[#5F4E3C] font-semibold text-xl py-3 px-7 hover:border-b-[3px] hover:border-[3px] disabled:opacity-20 disabled:cursor-not-allowed;
   }
   .card {
     @apply py-8 px-10 bg-[#FFF] w-full flex flex-col justify-center;

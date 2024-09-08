@@ -8,6 +8,10 @@ import toast from "react-hot-toast";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import DisputedTab from "@/components/DisputedTab/DisputedTab";
 import { useSearchParams } from "next/navigation";
+import { useWeb3 } from "@/context/useWeb3";
+import { Progress } from "@/svg/progress";
+import { Check } from "@/svg/check";
+import { Disputed } from "@/svg/disputed";
 
 const initialFormState = {
   dealName: "",
@@ -26,10 +30,12 @@ export default function Deals() {
 
   const searchParams = useSearchParams();
 
+  const { address, getUserAddress, proposeDispute, getDisputeCount } =
+    useWeb3();
+
   function open() {
     setIsOpenDisputeModal(true);
   }
-  console.log(formState);
 
   function close() {
     setIsOpenDisputeModal(false);
@@ -37,6 +43,10 @@ export default function Deals() {
   }
 
   useEffect(() => {
+    async () => {
+      const disputeCount = await getDisputeCount();
+      console.log(disputeCount);
+    };
     const disputeId = searchParams.get("disputeId");
     if (disputeId) {
       setSelectedTab(2);
@@ -45,8 +55,17 @@ export default function Deals() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setFormState(initialFormState);
-    setIsSuccess(true);
+    // setFormState(initialFormState);
+    // setIsSuccess(true);
+    proposeDispute({
+      name: formState.dealName,
+      message: formState.message,
+      images: [url],
+      counterparty: formState.address as `0x${string}`,
+      token: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+      amount: parseFloat(formState.disputeFee),
+      deadline: parseInt(formState.deadline) * 3600,
+    });
   };
 
   return (
@@ -197,7 +216,7 @@ export default function Deals() {
         <TabGroup selectedIndex={selectedTab} onChange={setSelectedTab}>
           <TabList className="w-full px-5 border-b border-[rgba(31,_31,_31,_0.47)] flex gap-9 overflow-x-auto">
             <Tab as={Fragment}>
-              {({ hover, selected }) => (
+              {({ selected }) => (
                 <button
                   className={`${
                     !selected
@@ -207,11 +226,14 @@ export default function Deals() {
                  text-base md:text-lg flex items-center gap-3 py-2 px-4 md:py-3 md:px-7 font-semibold focus-within:outline-none`}
                 >
                   Ongoing deal(s)
+                  <div className="w-4 h-4 md:w-7 md:h-7">
+                    <Progress />
+                  </div>
                 </button>
               )}
             </Tab>
             <Tab as={Fragment}>
-              {({ hover, selected }) => (
+              {({ selected }) => (
                 <button
                   className={`${
                     !selected
@@ -222,11 +244,14 @@ export default function Deals() {
                 >
                   {" "}
                   Completed deal(s)
+                  <div className="w-4 h-4 md:w-7 md:h-7">
+                    <Check />
+                  </div>
                 </button>
               )}
             </Tab>
             <Tab as={Fragment}>
-              {({ hover, selected }) => (
+              {({ selected }) => (
                 <button
                   className={`${
                     !selected
@@ -237,6 +262,9 @@ export default function Deals() {
                 >
                   {" "}
                   Disputed
+                  <div className="w-4 h-4 md:w-7 md:h-7">
+                    <Disputed />
+                  </div>
                 </button>
               )}
             </Tab>

@@ -1,6 +1,6 @@
 "use client";
 import { Close } from "@/svg/close";
-import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import { Dialog, DialogPanel } from "@headlessui/react";
 
 const Modal: React.FC<{
   isOpen: boolean;
