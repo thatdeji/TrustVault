@@ -23,6 +23,8 @@ const walletClient = createWalletClient({
 
 const DISPUTE_CONTRACT_ADDRESS = "0x86B5dc2C64b809c7CA897fE1Bd70FD41201a8bA9";
 
+const TOKEN_ADDRESS = "0xf7751e60Be2717CcD09dcCcCFE4cBF06A39c11a3";
+
 interface IProposeDispute {
   name: string;
   message: string;
@@ -135,7 +137,7 @@ export const useWeb3 = () => {
         message,
         images,
         counterparty,
-        "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+        TOKEN_ADDRESS,
         amountInWei,
         convertDeadlineToBigInt(deadline),
       ],

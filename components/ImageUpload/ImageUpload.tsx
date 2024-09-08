@@ -3,7 +3,6 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 import { Upload } from "@/svg/upload";
 import { Close } from "@/svg/close";
-import { create } from "ipfs-http-client";
 
 const allowedFileTypes = [
   "image/png",
@@ -20,22 +19,22 @@ const ImageUpload: React.FC<{
   url: string;
   setUrl: (url: string) => void;
 }> = ({ url, setUrl }) => {
-  const projectId = "3597a188fdf24058adfd270a2162a220";
+  // const projectId = "3597a188fdf24058adfd270a2162a220";
 
-  const projectSecret =
-    "c0PLzbxTDUHc8QkYZjIM7U6MxuhsQdEU2HmUh6S5NbAVGbRqNrkerg";
+  // const projectSecret =
+  //   "c0PLzbxTDUHc8QkYZjIM7U6MxuhsQdEU2HmUh6S5NbAVGbRqNrkerg";
 
-  const auth =
-    "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
+  // const auth =
+  //   "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
 
-  const client = create({
-    host: "ipfs.infura.io",
-    port: 5001,
-    protocol: "https",
-    headers: {
-      authorization: auth,
-    },
-  });
+  // const client = create({
+  //   host: "ipfs.infura.io",
+  //   port: 5001,
+  //   protocol: "https",
+  //   headers: {
+  //     authorization: auth,
+  //   },
+  // });
 
   const handleImageUpload = async (files: FileList | null) => {
     if (files?.length && files[0]) {
@@ -54,12 +53,12 @@ const ImageUpload: React.FC<{
       }
       try {
         toast.loading("Uploading image...");
-        const added = await client.add(file, {
-          progress: (prog) => console.log(`received: ${prog}`),
-        });
+        // const added = await client.add(file, {
+        //   progress: (prog) => console.log(`received: ${prog}`),
+        // });
         toast.loading("Uploaded image...");
-        const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-        setUrl(url);
+        // const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+        // setUrl(url);
       } catch (error) {
         console.log("Error uploading file: ", error);
       }

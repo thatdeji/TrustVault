@@ -15,7 +15,8 @@ export default function SingleDispute() {
   const [buyerVoteCount, setBuyerVoteCount] = useState(0);
   const [sellerVoteCount, setSellerVoteCount] = useState(0);
 
-  const { getDisputeVotes, getDisputeAttesterVotes, getDisputes } = useWeb3();
+  const { getDisputeVotes, getDisputes } = useWeb3();
+  console.log(buyerVoteCount, sellerVoteCount);
 
   const params = useParams();
 
@@ -73,7 +74,7 @@ export default function SingleDispute() {
           </p>
         </div>
         <p className="text-lg text-[rgba(31,_31,_31,_0.67)] font-normal">
-          Ends in {deal?.deadline} hours
+          Ends in {Math.ceil((deal?.deadline ?? 0) / 3600)} hours
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 mb-5 md:mb-6 gap-6">

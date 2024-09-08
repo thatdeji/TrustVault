@@ -91,7 +91,7 @@ export default function Settler() {
               {deals.map((deal, index) => (
                 <Link
                   key={index}
-                  href={"/settlers/1"}
+                  href={`/settlers/${index}`}
                   className="bg-[#FFF] w-full py-3 md:py-9 px-6 md:px-12"
                 >
                   <div className="flex gap-5 items-center justify-between mb-6 md:mb-8">
@@ -119,7 +119,7 @@ export default function Settler() {
                     {deal.dealerMessage}
                   </p>
                   <p className="text-sm md:text-base text-[rgba(31,_31,_31,_0.67)]">
-                    Ends in {deal.deadline} hours
+                    Ends in {Math.ceil(deal.deadline / 3600)} hours
                   </p>
                 </Link>
               ))}
